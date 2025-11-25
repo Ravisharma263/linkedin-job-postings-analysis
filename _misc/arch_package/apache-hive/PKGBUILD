@@ -1,0 +1,47 @@
+# Maintainer: Andhika <censored email>
+
+pkgname=apache-hive
+pkgver=3.1.3
+pkgrel=1
+pkgdesc='Apache Hive is a data warehouse software project built on top of Apache Hadoop for providing data query and analysis.'
+arch=('x86_64')
+url='https://hive.apache.org/'
+license=('APACHE')
+conflicts=('yarn')
+# I just make it the same as Hadoop from AUR
+depends=('inetutils' 'java-runtime-headless=11' 'openssh' 'protobuf')
+
+source=("https://dlcdn.apache.org/hive/hive-$pkgver/apache-hive-$pkgver-bin.tar.gz"
+        "${pkgname}" "${pkgname}.sh"
+        hive-{hiveserver2,metastore}.service)
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP')
+
+install=$pkgname.install
+
+prepare() {
+    # Nothing to customize
+}
+
+package() {
+    # Create directory structure
+    mkdir -p $pkgdir/{etc/profile.d,/etc/conf.d,opt,usr/lib/systemd/system}
+
+    # Install path profile
+    cp $pkgname.sh $pkgdir/etc/profile.d/
+
+    # Install enviroment file
+    cp $pkgname "$pkgdir"/etc/conf.d/
+
+    # Install systemd services
+    cp hive-hiveserver2.service hive-metastore.service $pkgdir/usr/lib/systemd/system/
+
+    # Install program files
+    mv apache-hive-${pkgver}-bin $pkgdir/opt/$pkgname
+
+    # Create required directories
+    mkdir -p "$pkgdir"/var/{lib,log}/hive
+}

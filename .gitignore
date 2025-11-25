@@ -1,0 +1,11 @@
+/.venv/
+/.venv_*/
+/.vscode/
+/*.log
+
+# Only if using PySpark without Hive
+/metastore_db/
+/spark-warehouse/
+
+# Default dataset folder
+/data/**/*.json

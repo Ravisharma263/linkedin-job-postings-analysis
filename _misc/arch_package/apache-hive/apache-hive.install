@@ -1,0 +1,18 @@
+post_install() {
+	getent group hive || groupadd hive
+	getent passwd hive || useradd -g hive -r -d /var/lib/hive hive
+    mkdir -p /var/{lib,log}/hive
+    chown -R hive:hive /var/{lib,log}/hive
+}
+
+pre_remove() {
+	for s in hiveserver2 metastore; do
+		systemctl stop hive-$s.service
+		systemctl --no-reload disable hive-$s.service
+	done
+}
+
+post_remove() {
+	userdel -r hive
+	rm -rf /var/log/hive
+}
